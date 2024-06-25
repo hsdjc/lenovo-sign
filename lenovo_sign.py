@@ -11,6 +11,7 @@ import smtplib
 from email.mime.text import MIMEText
 from smtplib import SMTP_SSL
 from email.header import Header
+import time
 
 import requests
 import toml
@@ -18,8 +19,8 @@ from requests.utils import cookiejar_from_dict, dict_from_cookiejar
 
 
 USER_AGENT = [
-    "Mozilla/5.0 (Linux; U; Android 11; zh-cn; PDYM20 Build/RP1A.200720.011) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/70.0.3538.80 Mobile Safari/537.36 HeyTapBrowser/40.7.24.9",
-    "Mozilla/5.0 (Linux; Android 12; Redmi K30 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36"
+    # "Mozilla/5.0 (Linux; Android 12; Pixel 5a) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36",
+   "Mozilla/5.0 (Linux; Android 14; Redmi K70) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Mobile Safari/537.36"
 ]
 
 
@@ -210,6 +211,11 @@ def sign(session):
         logger(e)
         serviceAmount, ledou = None, None
     session.close()
+
+    print(serviceAmount)
+    if(serviceAmount == None):
+        time.sleep(2)
+        sign(session)    
     if sign_response.json().get("success"):
         return f"\U00002705账号{username}签到成功, \U0001F4C6连续签到{sign_days}天, \U0001F954共有乐豆{ledou}个, \U0001F4C5共有延保{serviceAmount}天\n"
     else:
@@ -237,6 +243,7 @@ def main():
         if not session:
             continue
         message += sign(session)
+        print(message)
     push(message)
 
 
